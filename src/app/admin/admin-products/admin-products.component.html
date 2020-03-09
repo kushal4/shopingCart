@@ -1,0 +1,51 @@
+<p><a routerLink="/admin/products/new" class="btn btn-primary">New Product </a></p>
+<p><input #query (keyup)="filter(query.value)" type="text" class="form-control" placeholder="Search ...."></p>
+
+<h3>Multi Sort with MetaKey</h3>
+<p-table [columns]="cols" [value]="filterProducts" [paginator]="true" [rows]="5" sortMode="multiple">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+            </th>
+            <th [pSortableColumn]=""></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+            <td *ngFor="let col of columns">
+                {{rowData[col.field]}}
+            </td>
+            <td>
+                <a [routerLink]="['/admin/products',rowData.id]">Edit</a>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- <table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+         <tr *ngFor="let p of products$ | async">
+            <td>{{ p.title }}</td>
+            <td>{{ p.price }}</td>
+            <td>
+                <a [routerLink]="['/admin/products',p.id]">Edit</a>
+            </td>
+        </tr>  -->
+<!-- <tr *ngFor="let p of filterProducts">
+            <td>{{ p.title }}</td>
+            <td>{{ p.price }}</td>
+            <td>
+                <a [routerLink]="['/admin/products',p.id]">Edit</a>
+            </td>
+        </tr>
+    </tbody>
+</table> -->
