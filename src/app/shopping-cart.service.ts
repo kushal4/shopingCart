@@ -10,11 +10,7 @@ import { pipe } from "rxjs";
 export class ShoppingCartService {
   constructor(private db: AngularFirestore) {}
 
-  private create() {
-    return this.db.collection("shopping-carts").add({
-      dateCreated: new Date().getTime()
-    });
-  }
+
 
   async getCart() {
     let cartId = await this.getOrCreateCartId();
@@ -22,6 +18,49 @@ export class ShoppingCartService {
       .collection("shopping-carts")
       .doc(`${cartId}`)
       .collection("items");
+  }
+
+  private create() {
+    return this.db.collection("shopping-carts").add({
+      dateCreated: new Date().getTime()
+    });
+  }
+
+  async removeFromCart(product: Product) {
+    let cartId = await this.getOrCreateCartId();
+    console.log(cartId);
+    let item$ = this.getItem(cartId, product.id);
+    item$
+      .valueChanges()
+      .pipe(take(1))
+      .subscribe(item => {
+        if (item) {
+          console.log(item);
+          if(item["quantity"]==0){
+            console.log("delete it");
+            item$.delete();
+          }else{
+            this.updateQuantity(item$, item, -1);
+          }
+
+        }
+      });
+  }
+
+  updateQuantity(item$, item, change) {
+    item$.update({
+      quantity: item["quantity"] + change
+    });
+  }
+
+  async clearCart(){
+    console.log("clear cart");
+    let cartId = await this.getOrCreateCartId();
+    const qry= await this.db.collection('shopping-carts').doc(cartId).collection("items").ref.get();
+
+    qry.forEach(doc => {
+      doc.ref.delete();
+    });
   }
 
   private async getOrCreateCartId() {
@@ -66,24 +105,5 @@ export class ShoppingCartService {
       });
   }
 
-  async removeFromCart(product: Product) {
-    let cartId = await this.getOrCreateCartId();
-    console.log(cartId);
-    let item$ = this.getItem(cartId, product.id);
-    item$
-      .valueChanges()
-      .pipe(take(1))
-      .subscribe(item => {
-        if (item) {
-          console.log(item);
-          this.updateQuantity(item$, item, -1);
-        }
-      });
-  }
 
-  updateQuantity(item$, item, change) {
-    item$.update({
-      quantity: item["quantity"] + change
-    });
-  }
 }

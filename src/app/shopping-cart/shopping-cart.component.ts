@@ -19,9 +19,9 @@ export class ShoppingCartComponent implements OnInit {
 
   async ngOnInit() {
       let shoppingCart =new ShoppingCart(this.shoppingCartService);
-     (shoppingCart.getItems()).then(carts=>{
-       this.carts=carts;
-       this.carts_items=Object.keys(carts).length;
+     (shoppingCart.getItems()).then(resolve_arr=>{
+       this.carts=resolve_arr[0];
+       this.carts_items=Object.keys(this.carts).length;
        //console.log(this.carts);
        for (let cart_id in this.carts){
           //console.log(cart);
@@ -40,6 +40,13 @@ export class ShoppingCartComponent implements OnInit {
     }
 
     return totalPrice;
+  }
+
+  clearCart(){
+       console.log("clear Cart");
+       this.shoppingCartService.clearCart();
+       this.shoppingCartItemCount=0;
+       this.items=[];
   }
 
 }

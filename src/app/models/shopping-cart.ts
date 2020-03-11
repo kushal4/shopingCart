@@ -1,7 +1,7 @@
 import { Subscription, of } from 'rxjs';
 import { ShoppingCartService } from './../shopping-cart.service';
-import { resolve } from 'dns';
 import { rejects } from 'assert';
+import { Product } from './app-product';
 export class ShoppingCart{
 
   cart_items={};
@@ -24,14 +24,15 @@ export class ShoppingCart{
  async getItems(){
   let cart_arr={};
   return new Promise(async (resolve)=>{
-    (await this.shoppingCartService.getCart()).snapshotChanges()
+   let sub= (await this.shoppingCartService.getCart()).snapshotChanges()
     .subscribe(actions=>{
         actions.map(a => {
         //const data = a.payload.doc.data();
         cart_arr[a.payload.doc.id]=  a.payload.doc.data();
       //  console.log(cart_arr);
       });
-      resolve(cart_arr);
+      let resolve_arr=[cart_arr,sub]
+      resolve(resolve_arr);
 
      // return cart_arr;
     });
@@ -40,6 +41,14 @@ export class ShoppingCart{
 }
 
 
+getQuantity(product :Product,items){
+  let item= items[product.id];
+  return item ? item.quantity : 0;
 
+}
+
+test(){
+  console.log("sfsf");
+}
 
 }
