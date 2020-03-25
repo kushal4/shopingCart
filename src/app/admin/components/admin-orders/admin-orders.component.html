@@ -1,0 +1,20 @@
+<h1>Orders</h1>
+
+<div class="row col-10">
+    <table class="table" *ngIf="ordersCount!=0">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orders_obj | keyvalue">
+                <td>{{order.value.shipping.name}}</td>
+                <td>{{order.value.datePlaced | date:'MMM dd ,yyyy'}}</td>
+                <td><a>View</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
